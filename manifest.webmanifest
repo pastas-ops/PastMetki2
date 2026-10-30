@@ -1,0 +1,17 @@
+{
+  "name": "PastMetki",
+  "short_name": "PastMetki",
+  "description": "Заметки, планы и совместная работа",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#111211",
+  "theme_color": "#151515",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "pastmetki",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PastMetki notes and planning app",
+  "author": "PastMetki",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "desktop:dev": "electron .",
+    "desktop:dist": "electron-builder --win nsis portable",
+    "android:init": "cap add android",
+    "android:sync": "cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3",
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.pastmetki.app",
+    "productName": "PastMetki",
+    "directories": { "output": "release" },
+    "files": ["index.html", "styles.css", "app.js", "config.js", "manifest.webmanifest", "sw.js", "assets/**/*", "desktop/**/*"],
+    "win": { "target": ["nsis", "portable"], "artifactName": "PastMetki-${version}-${arch}.${ext}" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+  }
+}

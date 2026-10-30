@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#151515"><meta name="description" content="PastMetki — заметки, планы и совместная работа">
+  <link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <title>PastMetki</title>
+</head>
+<body>
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-brand"><span>Past</span><b>Metki</b></div>
+    <p class="muted center">Твои планы. Твоё время.</p>
+    <section class="auth-card">
+      <div class="auth-tabs"><button class="auth-tab active" data-auth="login">Войти</button><button class="auth-tab" data-auth="register">Регистрация</button></div>
+      <form id="auth-form">
+        <label id="name-wrap" class="field hidden">Имя<input id="display-name" autocomplete="name" placeholder="Как к тебе обращаться"></label>
+        <label class="field">Логин<input id="auth-login" autocomplete="username" minlength="3" maxlength="24" required placeholder="Твой логин"></label>
+        <label class="field">Пароль<input id="auth-password" type="password" autocomplete="current-password" minlength="8" required placeholder="Не менее 8 символов"></label>
+        <label id="repeat-wrap" class="field hidden">Повтори пароль<input id="auth-repeat" type="password" autocomplete="new-password" minlength="8" placeholder="Ещё раз пароль"></label>
+        <button class="primary full" type="submit" id="auth-submit">Войти</button>
+      </form>
+      <p class="hint">Для входа используется логин и пароль. Почта не требуется.</p>
+      <p id="auth-error" class="error" role="alert"></p>
+    </section>
+    <p class="tiny muted center">PastMetki · private by design</p>
+  </div>
+
+  <div id="app" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand"><span>Past</span><b>Metki</b></div>
+      <div class="side-caption">РАБОЧЕЕ ПРОСТРАНСТВО</div>
+      <nav id="side-nav">
+        <button data-page="calendar" class="nav-item"><i>▦</i>Календарь</button>
+        <button data-page="shared" class="nav-item"><i>◉</i>SovMetki</button>
+        <button data-page="notes" class="nav-item active"><i>▤</i>Заметки</button>
+        <button data-page="history" class="nav-item"><i>↶</i>История</button>
+      </nav>
+      <div class="side-bottom">
+        <button data-page="account" class="profile-short"><span class="avatar" id="side-avatar">?</span><span><b id="side-name">Аккаунт</b><small id="side-login">@login</small></span><span class="push">···</span></button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div><div class="eyebrow" id="page-eyebrow">ЛИЧНОЕ ПРОСТРАНСТВО</div><h1 id="page-title">Мои заметки</h1></div>
+        <div class="top-actions"><button class="icon-btn" id="quick-theme" title="Сменить тему">◐</button><button class="avatar clickable" id="top-avatar" data-page="account">?</button></div>
+      </header>
+
+      <section class="page active" id="page-notes">
+        <div class="content-grid">
+          <div class="note-column">
+            <div class="section-head"><div><h2>Активные заметки</h2><p class="muted">Всё важное — в одном месте</p></div><span class="counter" id="notes-count">0</span></div>
+            <div id="notes-list" class="stack"></div>
+            <div id="notes-empty" class="empty hidden"><div class="empty-icon">✦</div><h3>Пока здесь тихо</h3><p>Создай первую заметку или план.</p></div>
+          </div>
+          <aside class="composer card">
+            <div class="card-heading"><span class="yellow-dot"></span><h2>Новая заметка</h2></div>
+            <form id="note-form">
+              <label class="field">Название<input id="note-title" required maxlength="100" placeholder="Например, Подготовка к экзамену"></label>
+              <label class="field">Пункты плана<textarea id="note-body" rows="5" placeholder="Каждый пункт — с новой строки"></textarea></label>
+              <label class="field">Дедлайн<input id="note-due" type="datetime-local"></label>
+              <button class="primary full" type="submit">＋ Добавить заметку</button>
+            </form>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page" id="page-calendar">
+        <div class="section-head"><div><h2>Календарь дедлайнов</h2><p class="muted">Запланированные даты и задачи</p></div><input id="calendar-month" type="month" class="month-input"></div>
+        <div class="card calendar-card"><div class="calendar-week"><span>ПН</span><span>ВТ</span><span>СР</span><span>ЧТ</span><span>ПТ</span><span>СБ</span><span>ВС</span></div><div id="calendar-grid" class="calendar-grid"></div></div>
+        <div class="section-head compact"><h2 id="selected-date-title">Ближайшие дедлайны</h2></div><div id="calendar-items" class="stack"></div>
+      </section>
+
+      <section class="page" id="page-shared">
+        <div class="shared-layout">
+          <div class="friends-panel card">
+            <div class="section-head"><div><h2>Твои контакты</h2><p class="muted">Совместные пространства</p></div><button id="add-friend-open" class="round-plus" title="Добавить друга">＋</button></div>
+            <div id="friends-list" class="friend-list"></div>
+            <div class="invite-box"><small>Твоя ссылка-приглашение</small><code id="invite-code">Загрузка…</code><button id="copy-invite" class="ghost small">Копировать</button></div>
+          </div>
+          <div class="chat-panel card">
+            <div id="chat-placeholder" class="empty"><div class="empty-icon">◉</div><h3>Совместные заметки</h3><p>Добавь друга и начни общий чат.</p></div>
+            <div id="chat-view" class="hidden chat-view">
+              <div class="chat-head"><span class="avatar" id="chat-avatar">?</span><div><b id="chat-name">Диалог</b><small id="chat-status" class="muted">Совместное пространство</small></div><button id="clear-chat" class="ghost danger push">Очистить чат</button></div>
+              <div id="messages" class="messages"></div>
+              <form id="message-form" class="message-form"><input id="message-input" maxlength="2000" placeholder="Напиши заметку или план…" required><button class="primary" type="submit">Отправить</button></form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-history">
+        <div class="section-head"><div><h2>История</h2><p class="muted">Завершённые и удалённые из активных заметки</p></div><button id="clear-history" class="ghost danger">Очистить историю</button></div>
+        <div id="history-list" class="stack"></div>
+      </section>
+
+      <section class="page" id="page-account">
+        <div class="account-grid">
+          <div class="card account-card">
+            <div class="profile-hero"><button class="avatar avatar-xl" id="avatar-upload-btn" title="Изменить аватар">?</button><input type="file" id="avatar-file" accept="image/*" hidden><div><h2 id="account-name">Имя пользователя</h2><p class="muted" id="account-handle">@login</p></div></div>
+            <label class="field">Имя<input id="profile-name" maxlength="50"></label>
+            <label class="field">Новый логин<input id="profile-login" minlength="3" maxlength="24"></label>
+            <label class="field">Текущий пароль для подтверждения<input id="profile-password" type="password" autocomplete="current-password"></label>
+            <button class="primary" id="save-profile">Сохранить профиль</button>
+            <div class="divider"></div><button class="ghost danger" id="logout-btn">Выйти из аккаунта</button>
+          </div>
+          <div class="card settings-card"><h2>Настройки</h2><p class="muted">Оформление и поведение PastMetki</p>
+            <div class="setting-row"><div><b>Тема оформления</b><small class="muted">Чёрно-жёлтая или бело-жёлтая</small></div><div class="theme-switch"><button data-theme="dark" class="theme-choice">Тёмная</button><button data-theme="light" class="theme-choice">Светлая</button></div></div>
+            <div class="setting-row"><div><b>После выполнения заметки</b><small class="muted">Как поступать с завершёнными планами</small></div><select id="complete-action"><option value="history">Переносить в историю</option><option value="delete">Удалять</option></select></div>
+            <div class="setting-row"><div><b>Время создания</b><small class="muted">Показывать дату в заметках</small></div><input id="show-time" type="checkbox" checked></div>
+            <div class="divider"></div><h3>Виджеты и установка</h3><p class="muted">PastMetki можно установить на телефон или компьютер как PWA через меню браузера «Установить приложение». Системные виджеты рабочего стола/экрана блокировки требуют отдельной нативной версии.</p><button id="install-btn" class="ghost">Установить PastMetki</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <nav class="mobile-nav" id="mobile-nav">
+      <button data-page="calendar"><i>▦</i><small>Календарь</small></button><button data-page="shared"><i>◉</i><small>SovMetki</small></button><button data-page="notes" class="active"><i>▤</i><small>Заметки</small></button><button data-page="history"><i>↶</i><small>История</small></button><button data-page="account"><i>●</i><small>Аккаунт</small></button>
+    </nav>
+  </div>
+
+  <dialog id="friend-dialog" class="modal">
+    <form method="dialog" id="friend-form"><div class="modal-head"><h2>Добавить друга</h2><button class="icon-btn" value="cancel">×</button></div><p class="muted">Найди человека по его логину или коду приглашения.</p><label class="field">Логин или код<input id="friend-query" placeholder="Например, alex или 8F2K9Q" required></label><p id="friend-error" class="error"></p><button class="primary full" type="submit">Найти и добавить</button></form>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script><script src="./app.js"></script>
+</body></html>

@@ -1,0 +1,7 @@
+{
+  "appId": "com.pastmetki.app",
+  "appName": "PastMetki",
+  "webDir": ".",
+  "bundledWebRuntime": false,
+  "server": { "androidScheme": "https" }
+}
